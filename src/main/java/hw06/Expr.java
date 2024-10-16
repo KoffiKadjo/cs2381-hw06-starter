@@ -35,9 +35,23 @@ record Expr(String text) {
                 continue;
             }
 
-            // TODO:
-            // if (ch.equals(")")) {
-            //   ...
+            
+            if (ch.equals(")")) {
+                if (stack.size() < 3) {
+                    throw new RuntimeException("Malformed expression");
+                }
+                String a2 = stack.pop();
+                String op = stack.pop();
+                String a1 = stack.pop();
+
+                String result = applyOp(a1, op, a2);
+
+                stack.push(result);
+            }
+        }
+
+        if (stack.isEmpty()) {
+            throw new RuntimeException("Empty expression");
         }
 
         try {
@@ -48,7 +62,7 @@ record Expr(String text) {
             throw new RuntimeException("expected number: " + ee.toString());
         }
     }
-
+    
     static boolean isSpace(String xx) {
         return xx != null && Pattern.matches("^\\s+$", xx);
     }
